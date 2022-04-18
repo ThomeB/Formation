@@ -1,0 +1,13 @@
+{
+  "resourceName": "contentStorage",
+  "policyUUID": "022e93e2",
+  "bucketName": "formationcontentstoragebucket",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}
