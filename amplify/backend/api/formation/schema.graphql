@@ -1,22 +1,32 @@
-type Schedule @model @auth(rules: [{allow: public}]) {
-  id: ID!
-}
-
-type Instructor @model @auth(rules: [{allow: public}, {allow: owner}]) {
-  id: ID!
-  Students: [Student] @hasMany(indexName: "byInstructor", fields: ["id"])
-}
-
-type Student @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  instructorID: ID! @index(name: "byInstructor")
-}
-
 type Aircraft @model @auth(rules: [{allow: public}]) {
   id: ID!
   make: String!
   model: String!
   tail_number: String!
+}
+
+type Instructor @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Students: [Student] @hasMany(indexName: "byInstructor", fields: ["id"])
+  Profile: Profile @hasOne
+}
+
+type Student @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  instructorID: ID! @index(name: "byInstructor")
+  Profile: Profile @hasOne
+}
+
+type Profile @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  first_name: String
+  last_name: String
+  phone_number: String
+  email: String
+}
+
+type Schedule @model @auth(rules: [{allow: public}]) {
+  id: ID!
 }
 
 type Note @model @auth(rules: [{allow: public}]) {

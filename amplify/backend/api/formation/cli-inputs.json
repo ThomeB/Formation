@@ -3,7 +3,7 @@
   "serviceConfiguration": {
     "apiName": "formation",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/tmp/amplify-6747f860-8777-434c-8039-f8461dce505f/amplify/backend/api/formation/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-0f2a366a-c631-4ea7-8e44-47fac0fbe45f/amplify/backend/api/formation/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
       "keyDescription": "api key description",
@@ -17,10 +17,6 @@
     "additionalAuthTypes": [
       {
         "mode": "AWS_IAM"
-      },
-      {
-        "mode": "AMAZON_COGNITO_USER_POOLS",
-        "cognitoUserPoolId": "authFormation"
       }
     ]
   }

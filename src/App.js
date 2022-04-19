@@ -1,21 +1,56 @@
 import logo from './logo.svg';
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Amplify, API, Storage } from 'aws-amplify';
+import { Amplify, Storage, Hub, DataStore } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { listNotes } from './graphql/queries';
-import { DataStore } from '@aws-amplify/datastore';
-import { Aircraft, Instructor, Student, Schedule, Note } from './models';
+//import { DataStore } from '@aws-amplify/datastore';
+import { Note } from './models';
 Amplify.configure(awsExports);
 
-const initialFormState = { name: '', description: '', image: null }
+const initialFormState = { name: '', description: '' }
+// Create listener
+const authListener = Hub.listen('auth', async hubData => {
+  const { event } = hubData.payload;
+  if (event === 'signIn'){
+    DataStore.clear();
+    authListener();
+  }
+})
+
+const listener = Hub.listen('datastore', async hubData => {
+  const  { event, data } = hubData.payload;
+  if (event === 'networkStatus') {
+    console.log(`connection: ${data.active}`);
+  }
+  if (event === 'subscriptionsEstablished') {
+    console.log('subs established');
+  }
+  if (event === 'syncQueriesStarted') {
+    console.log(`syncQueries: ${data.models}`);
+    console.log("");
+  }
+  if (event === 'modelSynced') {
+    console.log(`${data.model.name} has been -\nFullSync: ${data.isFullSync}\nDelta: ${data.isDeltaSync}\nWith ${data.new} instances\nDeleted?: ${data.deleted}`);
+  }
+  if (event === 'syncQueriesReady') {
+    console.log("All models have been synced from the cloud");
+  }
+  if (event === 'ready') {
+    console.log("Apparently I am ready");
+    console.log(`User outboxproc: ${data}`);
+    listener();
+  }
+})
+
+
 
 function App({ signOut, user }) {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
-  DataStore.start();
+  DataStore.query(Note);
 
   useEffect(() => {
     fetchNotes();
@@ -31,14 +66,14 @@ function App({ signOut, user }) {
 
   async function fetchNotes() {
     //const apiData = await API.graphql({ query: listNotes });
-    const notesFromAPI = await DataStore.query(Note);//apiData.data.listNotes.items;
-    await Promise.all(notesFromAPI.map(async note => {
+    const notesFromAPI = await DataStore.query(Note); //apiData.data.listNotes.items;
+    notesFromAPI.map(async note => {
       if (note.image) {
         const image = await DataStore.query(note);//Storage.get(note.image);
         note.image = image.image;
       }
       return note;
-    }))
+    })
     const newNotesArray = await DataStore.query(Note);
     setNotes(newNotesArray);
   }
@@ -59,7 +94,7 @@ function App({ signOut, user }) {
         new Note({
         "name": formData.name,
         "description": formData.description,
-        "image": null
+        "image": ""
         })
       );
     }
@@ -104,7 +139,7 @@ function App({ signOut, user }) {
                 <button onClick={() => deleteNote(note)}>Delete note</button>
                 <br></br>
                 {
-                  note.image && <img src={note.image} style={{width: 400}} />
+                  note.image && <img src={note.image || ""} style={{width: 400}} />
                 }
               </div>
             ))
@@ -129,5 +164,6 @@ function App({ signOut, user }) {
     </>
   );
 }
+
 
 export default withAuthenticator(App);
