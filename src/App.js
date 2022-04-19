@@ -1,16 +1,119 @@
-import logo from './logo.svg';
+import logo from './logo.jpg';
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Amplify, Storage, Hub, DataStore } from 'aws-amplify';
+import { Amplify, Storage, Hub, DataStore, AuthModeStrategyType } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
-import { listNotes } from './graphql/queries';
-//import { DataStore } from '@aws-amplify/datastore';
-import { Note } from './models';
-Amplify.configure(awsExports);
+import { Profile, Note } from './models';
+import { useFormik } from "formik";
+
+Amplify.configure({...awsExports, DataStore: {
+  authModeStrategyType: AuthModeStrategyType.MULTI_AUTH
+}});
+
+const validate = values => {
+  const errors = {};
+  if (!values.first_name) {
+    errors.first_name = 'Required';
+  } else if (values.first_name.length > 15) {
+    errors.first_name = 'Must be 15 characters or less';
+  }
+
+  if (!values.last_name) {
+    errors.last_name = 'Required';
+  } else if (values.last_name.length > 20) {
+    errors.last_name = 'Must be 20 characters or less';
+  }
+  if (!values.phone_number) {
+    errors.phone_number = 'Required';
+  } else if (!/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/i.test(values.phone_number)) {
+    errors.phone_number = 'Invalid phone number. Must be in the form 123-123-1234';
+  }
+
+  if (!values.email) {
+    errors.email = 'Required';
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    errors.email = 'Invalid email address';
+  }
+
+  return errors;
+};
+
+const SignupForm = () => {
+  const formik = useFormik({
+    initialValues: { 
+      first_name: "", 
+      last_name: "", 
+      phone_number: "", 
+      email: "" 
+    },
+    validate,
+    onSubmit: values => {
+      DataStore.save(
+        new Profile({
+          "first_name" : values.first_name,
+          "last_name" : values.last_name,
+          "phone_number" : values.phone_number,
+          "email" : values.email
+        })
+      );
+      alert(JSON.stringify(values, null, 1));
+    }
+  });
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <div>
+      <label htmlFor="first_name">First Name</label>
+      <input
+        id="first_name"
+        name="first_name"
+        type="text"
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.first_name}
+      />
+      </div>
+      <div>
+      <label htmlFor="last_name">Last Name</label>
+      <input
+        id="last_name"
+        name="last_name"
+        type="text"
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.last_name}
+      />
+      </div>
+      <div>
+      <label htmlFor="phone_number">Phone Number</label>
+      <input 
+        id="phone_number"
+        name="phone_number"
+        type="phone"
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.phone_number}
+      />
+      </div>
+      <div>
+      <label htmlFor="email">Email Address</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        value={formik.values.email}
+      />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 
 const initialFormState = { name: '', description: '' }
+
 // Create listener
 const authListener = Hub.listen('auth', async hubData => {
   const { event } = hubData.payload;
@@ -20,7 +123,7 @@ const authListener = Hub.listen('auth', async hubData => {
   }
 })
 
-const listener = Hub.listen('datastore', async hubData => {
+const dataListener = Hub.listen('datastore', async hubData => {
   const  { event, data } = hubData.payload;
   if (event === 'networkStatus') {
     console.log(`connection: ${data.active}`);
@@ -41,7 +144,7 @@ const listener = Hub.listen('datastore', async hubData => {
   if (event === 'ready') {
     console.log("Apparently I am ready");
     console.log(`User outboxproc: ${data}`);
-    listener();
+    dataListener();
   }
 })
 
@@ -111,10 +214,17 @@ function App({ signOut, user }) {
 
   return (
     <>
-      <h1>Hello { user.username }</h1>
+      <h1>Quick and Dirty Formation App</h1>
       <button onClick={signOut}>Sign out</button>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <div className="signUpForm">
+            <p>This will instantiate a profile table for the user in my database</p>
+            <SignupForm />
+          </div>
+        </header>
+        <h1>Data Storage Testing Area</h1>
       <div className="App">
-        <h1>My Notes App</h1>
         <input
           type="file"
           onChange={onChange}
@@ -145,21 +255,6 @@ function App({ signOut, user }) {
             ))
           }
         </div>
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <h1>New Test</h1>
-        </header>
       </div>
     </>
   );
