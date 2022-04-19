@@ -15,6 +15,7 @@ const initialFormState = { name: '', description: '', image: null }
 function App({ signOut, user }) {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
+  DataStore.start();
 
   useEffect(() => {
     fetchNotes();
@@ -29,16 +30,17 @@ function App({ signOut, user }) {
   }
 
   async function fetchNotes() {
-    const apiData = await API.graphql({ query: listNotes });
-    const notesFromAPI = apiData.data.listNotes.items;
+    //const apiData = await API.graphql({ query: listNotes });
+    const notesFromAPI = await DataStore.query(Note);//apiData.data.listNotes.items;
     await Promise.all(notesFromAPI.map(async note => {
       if (note.image) {
-        const image = await Storage.get(note.image);
-        note.image = image;
+        const image = await DataStore.query(note);//Storage.get(note.image);
+        note.image = image.image;
       }
       return note;
     }))
-    setNotes(apiData.data.listNotes.items);
+    const newNotesArray = await DataStore.query(Note);
+    setNotes(newNotesArray);
   }
 
   async function createNote() {
