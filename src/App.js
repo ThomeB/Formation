@@ -6,10 +6,11 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { listNotes } from './graphql/queries';
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
+import { DataStore } from '@aws-amplify/datastore';
+import { Aircraft, Instructor, Student, Schedule, Note } from './models';
 Amplify.configure(awsExports);
 
-const initialFormState = { name: '', description: '' }
+const initialFormState = { name: '', description: '', image: null }
 
 function App({ signOut, user }) {
   const [notes, setNotes] = useState([]);
@@ -42,19 +43,33 @@ function App({ signOut, user }) {
 
   async function createNote() {
     if (!formData.name || !formData.description) return;
-    await API.graphql({ query: createNoteMutation, variables: { input: formData } });
     if (formData.image) {
       const image = await Storage.get(formData.image);
-      formData.image = image;
+      await DataStore.save(
+        new Note({
+        "name": formData.name,
+        "description": formData.description,
+        "image": image
+        })
+      );
+    } else {
+      await DataStore.save(
+        new Note({
+        "name": formData.name,
+        "description": formData.description,
+        "image": null
+        })
+      );
     }
-    setNotes([ ...notes, formData ]);
+    const newNotesArray = await DataStore.query(Note);
+    setNotes(newNotesArray);
     setFormData(initialFormState);
   }
 
-  async function deleteNote({ id }) {
-    const newNotesArray = notes.filter(note => note.id !== id);
+  async function deleteNote(note) {
+    DataStore.delete(note);
+    const newNotesArray = await DataStore.query(Note);
     setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
   }
 
   return (
