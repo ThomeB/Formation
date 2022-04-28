@@ -1,6 +1,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateNote = /* GraphQL */ `
+  subscription OnCreateNote {
+    onCreateNote {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateNote = /* GraphQL */ `
+  subscription OnUpdateNote {
+    onUpdateNote {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteNote = /* GraphQL */ `
+  subscription OnDeleteNote {
+    onDeleteNote {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateAircraft = /* GraphQL */ `
   subscription OnCreateAircraft {
     onCreateAircraft {
@@ -46,246 +91,60 @@ export const onDeleteAircraft = /* GraphQL */ `
     }
   }
 `;
-export const onCreateInstructor = /* GraphQL */ `
-  subscription OnCreateInstructor {
-    onCreateInstructor {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const onUpdateInstructor = /* GraphQL */ `
-  subscription OnUpdateInstructor {
-    onUpdateInstructor {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const onDeleteInstructor = /* GraphQL */ `
-  subscription OnDeleteInstructor {
-    onDeleteInstructor {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const onCreateStudent = /* GraphQL */ `
-  subscription OnCreateStudent {
-    onCreateStudent {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const onUpdateStudent = /* GraphQL */ `
-  subscription OnUpdateStudent {
-    onUpdateStudent {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const onDeleteStudent = /* GraphQL */ `
-  subscription OnDeleteStudent {
-    onDeleteStudent {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const onCreateProfile = /* GraphQL */ `
-  subscription OnCreateProfile {
-    onCreateProfile {
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser($owner: String) {
+    onCreateUser(owner: $owner) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
-export const onUpdateProfile = /* GraphQL */ `
-  subscription OnUpdateProfile {
-    onUpdateProfile {
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser($owner: String) {
+    onUpdateUser(owner: $owner) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
-export const onDeleteProfile = /* GraphQL */ `
-  subscription OnDeleteProfile {
-    onDeleteProfile {
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser($owner: String) {
+    onDeleteUser(owner: $owner) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
@@ -293,11 +152,42 @@ export const onCreateSchedule = /* GraphQL */ `
   subscription OnCreateSchedule {
     onCreateSchedule {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      scheduleUserId
     }
   }
 `;
@@ -305,11 +195,42 @@ export const onUpdateSchedule = /* GraphQL */ `
   subscription OnUpdateSchedule {
     onUpdateSchedule {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      scheduleUserId
     }
   }
 `;
@@ -317,6 +238,52 @@ export const onDeleteSchedule = /* GraphQL */ `
   subscription OnDeleteSchedule {
     onDeleteSchedule {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      scheduleUserId
+    }
+  }
+`;
+export const onCreateTask = /* GraphQL */ `
+  subscription OnCreateTask {
+    onCreateTask {
+      id
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version
@@ -325,13 +292,13 @@ export const onDeleteSchedule = /* GraphQL */ `
     }
   }
 `;
-export const onCreateNote = /* GraphQL */ `
-  subscription OnCreateNote {
-    onCreateNote {
+export const onUpdateTask = /* GraphQL */ `
+  subscription OnUpdateTask {
+    onUpdateTask {
       id
-      name
-      description
-      image
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version
@@ -340,28 +307,13 @@ export const onCreateNote = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateNote = /* GraphQL */ `
-  subscription OnUpdateNote {
-    onUpdateNote {
+export const onDeleteTask = /* GraphQL */ `
+  subscription OnDeleteTask {
+    onDeleteTask {
       id
-      name
-      description
-      image
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onDeleteNote = /* GraphQL */ `
-  subscription OnDeleteNote {
-    onDeleteNote {
-      id
-      name
-      description
-      image
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version

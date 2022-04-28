@@ -1,6 +1,60 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createNote = /* GraphQL */ `
+  mutation CreateNote(
+    $input: CreateNoteInput!
+    $condition: ModelNoteConditionInput
+  ) {
+    createNote(input: $input, condition: $condition) {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateNote = /* GraphQL */ `
+  mutation UpdateNote(
+    $input: UpdateNoteInput!
+    $condition: ModelNoteConditionInput
+  ) {
+    updateNote(input: $input, condition: $condition) {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteNote = /* GraphQL */ `
+  mutation DeleteNote(
+    $input: DeleteNoteInput!
+    $condition: ModelNoteConditionInput
+  ) {
+    deleteNote(input: $input, condition: $condition) {
+      id
+      name
+      description
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createAircraft = /* GraphQL */ `
   mutation CreateAircraft(
     $input: CreateAircraftInput!
@@ -55,273 +109,69 @@ export const deleteAircraft = /* GraphQL */ `
     }
   }
 `;
-export const createInstructor = /* GraphQL */ `
-  mutation CreateInstructor(
-    $input: CreateInstructorInput!
-    $condition: ModelInstructorConditionInput
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    createInstructor(input: $input, condition: $condition) {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const updateInstructor = /* GraphQL */ `
-  mutation UpdateInstructor(
-    $input: UpdateInstructorInput!
-    $condition: ModelInstructorConditionInput
-  ) {
-    updateInstructor(input: $input, condition: $condition) {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const deleteInstructor = /* GraphQL */ `
-  mutation DeleteInstructor(
-    $input: DeleteInstructorInput!
-    $condition: ModelInstructorConditionInput
-  ) {
-    deleteInstructor(input: $input, condition: $condition) {
-      id
-      Students {
-        items {
-          id
-          instructorID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          studentProfileId
-        }
-        nextToken
-        startedAt
-      }
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      instructorProfileId
-    }
-  }
-`;
-export const createStudent = /* GraphQL */ `
-  mutation CreateStudent(
-    $input: CreateStudentInput!
-    $condition: ModelStudentConditionInput
-  ) {
-    createStudent(input: $input, condition: $condition) {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const updateStudent = /* GraphQL */ `
-  mutation UpdateStudent(
-    $input: UpdateStudentInput!
-    $condition: ModelStudentConditionInput
-  ) {
-    updateStudent(input: $input, condition: $condition) {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const deleteStudent = /* GraphQL */ `
-  mutation DeleteStudent(
-    $input: DeleteStudentInput!
-    $condition: ModelStudentConditionInput
-  ) {
-    deleteStudent(input: $input, condition: $condition) {
-      id
-      instructorID
-      Profile {
-        id
-        first_name
-        last_name
-        phone_number
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      studentProfileId
-    }
-  }
-`;
-export const createProfile = /* GraphQL */ `
-  mutation CreateProfile(
-    $input: CreateProfileInput!
-    $condition: ModelProfileConditionInput
-  ) {
-    createProfile(input: $input, condition: $condition) {
+    createUser(input: $input, condition: $condition) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
-export const updateProfile = /* GraphQL */ `
-  mutation UpdateProfile(
-    $input: UpdateProfileInput!
-    $condition: ModelProfileConditionInput
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    updateProfile(input: $input, condition: $condition) {
+    updateUser(input: $input, condition: $condition) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
-export const deleteProfile = /* GraphQL */ `
-  mutation DeleteProfile(
-    $input: DeleteProfileInput!
-    $condition: ModelProfileConditionInput
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    deleteProfile(input: $input, condition: $condition) {
+    deleteUser(input: $input, condition: $condition) {
       id
       first_name
       last_name
       phone_number
       email
+      picture
+      role
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      owner
     }
   }
 `;
@@ -332,11 +182,42 @@ export const createSchedule = /* GraphQL */ `
   ) {
     createSchedule(input: $input, condition: $condition) {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      scheduleUserId
     }
   }
 `;
@@ -347,11 +228,42 @@ export const updateSchedule = /* GraphQL */ `
   ) {
     updateSchedule(input: $input, condition: $condition) {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      scheduleUserId
     }
   }
 `;
@@ -362,6 +274,55 @@ export const deleteSchedule = /* GraphQL */ `
   ) {
     deleteSchedule(input: $input, condition: $condition) {
       id
+      Tasks {
+        items {
+          id
+          beginTask
+          endTask
+          scheduleID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
+      User {
+        id
+        first_name
+        last_name
+        phone_number
+        email
+        picture
+        role
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      scheduleUserId
+    }
+  }
+`;
+export const createTask = /* GraphQL */ `
+  mutation CreateTask(
+    $input: CreateTaskInput!
+    $condition: ModelTaskConditionInput
+  ) {
+    createTask(input: $input, condition: $condition) {
+      id
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version
@@ -370,16 +331,16 @@ export const deleteSchedule = /* GraphQL */ `
     }
   }
 `;
-export const createNote = /* GraphQL */ `
-  mutation CreateNote(
-    $input: CreateNoteInput!
-    $condition: ModelNoteConditionInput
+export const updateTask = /* GraphQL */ `
+  mutation UpdateTask(
+    $input: UpdateTaskInput!
+    $condition: ModelTaskConditionInput
   ) {
-    createNote(input: $input, condition: $condition) {
+    updateTask(input: $input, condition: $condition) {
       id
-      name
-      description
-      image
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version
@@ -388,34 +349,16 @@ export const createNote = /* GraphQL */ `
     }
   }
 `;
-export const updateNote = /* GraphQL */ `
-  mutation UpdateNote(
-    $input: UpdateNoteInput!
-    $condition: ModelNoteConditionInput
+export const deleteTask = /* GraphQL */ `
+  mutation DeleteTask(
+    $input: DeleteTaskInput!
+    $condition: ModelTaskConditionInput
   ) {
-    updateNote(input: $input, condition: $condition) {
+    deleteTask(input: $input, condition: $condition) {
       id
-      name
-      description
-      image
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const deleteNote = /* GraphQL */ `
-  mutation DeleteNote(
-    $input: DeleteNoteInput!
-    $condition: ModelNoteConditionInput
-  ) {
-    deleteNote(input: $input, condition: $condition) {
-      id
-      name
-      description
-      image
+      beginTask
+      endTask
+      scheduleID
       createdAt
       updatedAt
       _version

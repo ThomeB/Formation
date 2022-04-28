@@ -2,11 +2,11 @@ import logo from './logo.jpg';
 import React, { useState, useEffect } from 'react';
 import './App.css';
 //import { taskList, Form } from './formationComponents';
-import { Amplify, Storage, Hub, DataStore, AuthModeStrategyType } from 'aws-amplify';
+import { Amplify, Storage, Hub, DataStore } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
-import { User, Note, Aircraft } from './models';
+import { User, Note, Aircraft, Schedule, Task } from './models';
 import { useFormik } from "formik";
 
 Amplify.configure(awsExports);
@@ -42,10 +42,11 @@ const validate = values => {
   return errors;
 };
 
-/**--------------------------------------------------------------------------------
+ /**--------------------------------------------------------------------------------
  *                              FORMIK SIGNUPFORM
  ----------------------------------------------------------------------------------*/
-const SignupForm = () => {
+
+ const SignupForm = () => {
   const formik = useFormik({
     initialValues: { 
       first_name: "", 
@@ -55,14 +56,7 @@ const SignupForm = () => {
     },
     validate,
     onSubmit: values => {
-      DataStore.save(
-        new User({
-          "first_name" : values.first_name,
-          "last_name" : values.last_name,
-          "phone_number" : values.phone_number,
-          "email" : values.email
-        })
-      );
+      //updateUser(values);
       alert(JSON.stringify(values, null, 1));
     }
   });
@@ -117,7 +111,8 @@ const SignupForm = () => {
   );
 };
 
-const initialFormState = { name: '', description: '' }
+
+
 
 /**---------------------------------------------------------------
  * Listener Section
@@ -125,13 +120,12 @@ const initialFormState = { name: '', description: '' }
 const authListener = Hub.listen('auth', async hubData => {
   const { event } = hubData.payload;
   if (event === 'signIn'){
-    DataStore.clear();
+    //DataStore.clear();
     authListener();
   }
 })
 
 const dataListener = Hub.listen('datastore', async hubData => {
-  console.log("I am in the listener");
   const  { event, data } = hubData.payload;
   if (event === 'networkStatus') {
     console.log(`connection: ${data.active}`);
@@ -157,13 +151,27 @@ const dataListener = Hub.listen('datastore', async hubData => {
 });
 
 
+
 /**------------------------------------------------------------------
  * APPLICATION
  -------------------------------------------------------------------*/
 function App({ signOut, user }) {
   const [notes, setNotes] = useState([]);
-  const [formData, setFormData] = useState(initialFormState);
+  const [currentUser, setCurrentUser] = useState([]);
+  const [aircraft, setAircraft] = useState([]);
+  const [tasks, setTasks] = useState([]);
+
   DataStore.query(Note);
+  fetchUser();
+  fetchAircraft();
+
+  const initialFormState = { name: '', description: '' }
+  const initialUserFormState = { first_name: '', last_name: '', email: '', phone_number: '' }
+  const initialAircraftFormState = { tail_number: '' }
+
+  const [userFormData, setUserFormData] = useState(initialUserFormState);
+  const [aircraftFormData, setAircraftFormData] = useState(initialAircraftFormState);
+  const [formData, setFormData] = useState(initialFormState);
 
   /**---------------------------------------------------------------------
    *  DELETE CREATE UPDATE QUERY SECTION
@@ -182,33 +190,49 @@ function App({ signOut, user }) {
   }
 
   /**------------------------------------------------------------------
+   *                             Aircraft
+   --------------------------------------------------------------------*/
+   async function fetchAircraft(tail) {
+     var searchedAircraft;
+     if (tail) {
+      searchedAircraft = await DataStore.query(Aircraft, a => a.tail_number("eq", tail));
+     } else {
+      searchedAircraft = await DataStore.query(Aircraft); 
+     }
+     setAircraft(searchedAircraft);
+   }
+   /**------------------------------------------------------------------
+   *                             Aircraft
+   --------------------------------------------------------------------*/
+
+  /**------------------------------------------------------------------
    *                             USER
    --------------------------------------------------------------------*/ 
-  async function updateUser() {
-    const currentUser = await DataStore.query(User);
-    console.log(currentUser);
+  async function updateUserForm() {
+    //if (!userFormData) return;
+    const rightNow = await DataStore.query(User, u => u.email("eq", user.attributes.email));
+    console.log(rightNow);
+    await DataStore.save(
+      User.copyOf(rightNow[0], updated => {
+        updated.first_name = userFormData.first_name;
+      })
+    );
+    const updatedArray = await DataStore.query(User, u => u.email("eq", user.attributes.email));
+    console.log(updatedArray);
+    setCurrentUser(updatedArray);
   } 
-  updateUser();
-
-  async function createUser() {
-
-  }
-
-  async function deleteUser() {
-
-  }
 
   async function fetchUser() {
-  
+    const fetchedUser = await DataStore.query(User, u => u.email("eq", user.attributes.email));
+    
+    setCurrentUser(fetchedUser);
   }
 
   /**------------------------------------------------------------------
    *                             NOTE
    --------------------------------------------------------------------*/
   async function fetchNotes() {
-    console.log("Fetch");
     const notesFromAPI = await DataStore.query(Note);
-    console.log("fs" + notesFromAPI);
     notesFromAPI.map(async note => {
       if (note.image) {
         const image = await DataStore.query(note);
@@ -251,6 +275,21 @@ function App({ signOut, user }) {
     setNotes(newNotesArray);
   }
 
+  /**
+   *  COMPONENT TEST
+   */
+function InstructorView(props) {
+  var currentRole = props.role;
+  switch(currentRole[0]){
+    case 'INSTRUCTOR':
+      return <h1>Instructor</h1>;
+    case 'STUDENT':
+      return <h1>Student</h1>;
+    default:
+      return <h1>Neither</h1>;
+  }
+}
+
   /**--------------------------------------------------------------------------
    *  ACTUAL HTML RETURNED / WEBSITE LAYOUT
    ----------------------------------------------------------------------------*/
@@ -260,13 +299,20 @@ function App({ signOut, user }) {
       <button onClick={signOut}>Sign out</button>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
+          <p><b>Welcome</b> {currentUser.map( cuser => ( cuser.first_name + " " + cuser.last_name ))}!</p>
           <div className="signUpForm">
-            <p>This will instantiate a profile table for the user in my database</p>
-            <SignupForm />
+            <p>This will update the profile information for the user in my database</p>
+            <input 
+              onChange={e => setUserFormData({ ...userFormData, 'first_name': e.target.value})}
+              placeholder=  {currentUser.map( cuser => ( cuser.first_name ))}
+              value={userFormData.first_name}
+            />
+            <button onClick={updateUserForm}>Submit</button>
           </div>
         </header>
-      <h1>Data Storage Testing Area</h1>
+        <InstructorView role={currentUser.map(cuser => cuser.role)} />
       <div className="App">
+      <h1>Data Storage Testing Area</h1>
         <input
           type="file"
           onChange={onChange}
