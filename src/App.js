@@ -1,17 +1,19 @@
 import logo from './logo.jpg';
 import React, { useState, useEffect } from 'react';
 import './App.css';
+//import { taskList, Form } from './formationComponents';
 import { Amplify, Storage, Hub, DataStore, AuthModeStrategyType } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
-import { Profile, Note } from './models';
+import { User, Note, Aircraft } from './models';
 import { useFormik } from "formik";
 
-Amplify.configure({...awsExports, DataStore: {
-  authModeStrategyType: AuthModeStrategyType.MULTI_AUTH
-}});
+Amplify.configure(awsExports);
 
+/**-----------------------------------------------------------------
+ *                          VALIDATION
+ -------------------------------------------------------------------*/
 const validate = values => {
   const errors = {};
   if (!values.first_name) {
@@ -40,6 +42,9 @@ const validate = values => {
   return errors;
 };
 
+/**--------------------------------------------------------------------------------
+ *                              FORMIK SIGNUPFORM
+ ----------------------------------------------------------------------------------*/
 const SignupForm = () => {
   const formik = useFormik({
     initialValues: { 
@@ -51,7 +56,7 @@ const SignupForm = () => {
     validate,
     onSubmit: values => {
       DataStore.save(
-        new Profile({
+        new User({
           "first_name" : values.first_name,
           "last_name" : values.last_name,
           "phone_number" : values.phone_number,
@@ -114,7 +119,9 @@ const SignupForm = () => {
 
 const initialFormState = { name: '', description: '' }
 
-// Create listener
+/**---------------------------------------------------------------
+ * Listener Section
+ -----------------------------------------------------------------*/
 const authListener = Hub.listen('auth', async hubData => {
   const { event } = hubData.payload;
   if (event === 'signIn'){
@@ -124,6 +131,7 @@ const authListener = Hub.listen('auth', async hubData => {
 })
 
 const dataListener = Hub.listen('datastore', async hubData => {
+  console.log("I am in the listener");
   const  { event, data } = hubData.payload;
   if (event === 'networkStatus') {
     console.log(`connection: ${data.active}`);
@@ -146,19 +154,25 @@ const dataListener = Hub.listen('datastore', async hubData => {
     console.log(`User outboxproc: ${data}`);
     dataListener();
   }
-})
+});
 
 
-
+/**------------------------------------------------------------------
+ * APPLICATION
+ -------------------------------------------------------------------*/
 function App({ signOut, user }) {
   const [notes, setNotes] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
   DataStore.query(Note);
 
+  /**---------------------------------------------------------------------
+   *  DELETE CREATE UPDATE QUERY SECTION
+   -----------------------------------------------------------------------*/
   useEffect(() => {
     fetchNotes();
   }, []);
 
+  //onchange is a listener for the formdata on the notes section
   async function onChange(e) {
     if (!e.target.files[0]) return
     const file = e.target.files[0];
@@ -167,12 +181,37 @@ function App({ signOut, user }) {
     fetchNotes();
   }
 
+  /**------------------------------------------------------------------
+   *                             USER
+   --------------------------------------------------------------------*/ 
+  async function updateUser() {
+    const currentUser = await DataStore.query(User);
+    console.log(currentUser);
+  } 
+  updateUser();
+
+  async function createUser() {
+
+  }
+
+  async function deleteUser() {
+
+  }
+
+  async function fetchUser() {
+  
+  }
+
+  /**------------------------------------------------------------------
+   *                             NOTE
+   --------------------------------------------------------------------*/
   async function fetchNotes() {
-    //const apiData = await API.graphql({ query: listNotes });
-    const notesFromAPI = await DataStore.query(Note); //apiData.data.listNotes.items;
+    console.log("Fetch");
+    const notesFromAPI = await DataStore.query(Note);
+    console.log("fs" + notesFromAPI);
     notesFromAPI.map(async note => {
       if (note.image) {
-        const image = await DataStore.query(note);//Storage.get(note.image);
+        const image = await DataStore.query(note);
         note.image = image.image;
       }
       return note;
@@ -212,6 +251,9 @@ function App({ signOut, user }) {
     setNotes(newNotesArray);
   }
 
+  /**--------------------------------------------------------------------------
+   *  ACTUAL HTML RETURNED / WEBSITE LAYOUT
+   ----------------------------------------------------------------------------*/
   return (
     <>
       <h1>Quick and Dirty Formation App</h1>
@@ -223,7 +265,7 @@ function App({ signOut, user }) {
             <SignupForm />
           </div>
         </header>
-        <h1>Data Storage Testing Area</h1>
+      <h1>Data Storage Testing Area</h1>
       <div className="App">
         <input
           type="file"
@@ -261,4 +303,4 @@ function App({ signOut, user }) {
 }
 
 
-export default withAuthenticator(App);
+export default withAuthenticator(App); 

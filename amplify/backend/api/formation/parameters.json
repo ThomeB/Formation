@@ -2,5 +2,11 @@
   "AppSyncApiName": "formation",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2022-04-19T15:46:15.537Z"
+  "AuthModeLastUpdated": "2022-04-28T12:45:55.110Z",
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authformation740c0a97",
+      "Outputs.UserPoolId"
+    ]
+  }
 }
